@@ -9,6 +9,8 @@
 // @grant        GM_getValue
 // @grant        GM_deleteValue
 // @grant        GM_addStyle
+// @downloadURL https://raw.githubusercontent.com/lijunjie2232/zlib_account_manager/refs/heads/master/src/tamp_index.js
+// @updateURL https://raw.githubusercontent.com/lijunjie2232/zlib_account_manager/refs/heads/master/src/tamp_index.js
 // ==/UserScript==
 
 (function () {
