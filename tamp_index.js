@@ -340,6 +340,7 @@
   };
 
   // Show account form (add or edit)
+  // Show account form (add or edit)
   const showAccountForm = (index = -1) => {
     const isEdit = index >= 0;
     const account = isEdit
@@ -368,8 +369,11 @@
                 </div>
                 <div class="zlib-form-group">
                     <label>Password:</label>
-                    <input type="password" class="zlib-form-input" id="zlib-password"
-                           value="${account.password}" required>
+                    <div style="position: relative;">
+                        <input type="password" class="zlib-form-input" id="zlib-password"
+                               value="${account.password}" required>
+                        <button type="button" class="zlib-btn" id="zlib-toggle-password" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); margin: 0; padding: 4px 8px;">🔒</button>
+                    </div>
                 </div>
                 <div style="margin-top: 15px;">
                     <button type="button" class="zlib-btn" id="zlib-cancel-form">Cancel</button>
@@ -380,11 +384,7 @@
                 </div>
             </form>
         `;
-    // ${
-    //   isEdit
-    //     ? `<button type="button" class="zlib-btn zlib-btn-success" id="zlib-test-login">Test Login</button>`
-    //     : ""
-    // }
+
     const form = document.getElementById("zlib-account-form");
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -395,11 +395,29 @@
       .getElementById("zlib-cancel-form")
       .addEventListener("click", renderAccountManager);
 
-    // if (isEdit) {
+    // Add password visibility toggle with continuous press
+    const toggleButton = document.getElementById("zlib-toggle-password");
+    const passwordInput = document.getElementById("zlib-password");
+    
+    toggleButton.addEventListener("mousedown", () => showPassword(passwordInput));
+    toggleButton.addEventListener("touchstart", () => showPassword(passwordInput));
+    toggleButton.addEventListener("mouseup", () => hidePassword(passwordInput));
+    toggleButton.addEventListener("touchend", () => hidePassword(passwordInput));
+    toggleButton.addEventListener("mouseleave", () => hidePassword(passwordInput));
+
     document.getElementById("zlib-test-login").addEventListener("click", () => {
       testLogin(index, isEdit);
     });
-    // }
+  };
+
+  // Show password when button is pressed
+  const showPassword = (passwordInput) => {
+    passwordInput.type = "text";
+  };
+
+  // Hide password when button is released
+  const hidePassword = (passwordInput) => {
+    passwordInput.type = "password";
   };
 
   // Save account
