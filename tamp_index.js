@@ -447,12 +447,13 @@
     msg.textContent = message;
     msg.style.cssText = `
             position: fixed;
-            top: 80px;
-            right: 30px;
-            padding: 12px 20px;
+            bottom: 20px;
+            right: 100px;
+            padding: 20px 24px;
             border-radius: 4px;
+            height: 60px;
             color: white;
-            font-size: 14px;
+            font-size: 16px;
             z-index: 10001;
             background: ${
               type === "success"
