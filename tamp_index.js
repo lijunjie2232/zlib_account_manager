@@ -331,7 +331,6 @@
                     <button type="submit" class="zlib-btn zlib-btn-primary">${
                       isEdit ? "更新" : "保存"
                     }</button>
-
                     <button type="button" class="zlib-btn zlib-btn-success" id="zlib-test-login">测试登录</button>
                 </div>
             </form>
@@ -351,13 +350,11 @@
       .getElementById("zlib-cancel-form")
       .addEventListener("click", renderAccountManager);
 
-    if (isEdit) {
-      document
-        .getElementById("zlib-test-login")
-        .addEventListener("click", () => {
-          testLogin(index);
-        });
-    }
+    // if (isEdit) {
+    document.getElementById("zlib-test-login").addEventListener("click", () => {
+      testLogin(index, isEdit);
+    });
+    // }
   };
 
   // 保存账号
@@ -409,7 +406,7 @@
   };
 
   // 测试登录
-  const testLogin = async (index) => {
+  const testLogin = async (index, isEdit) => {
     const account = accounts[index];
 
     try {
@@ -419,9 +416,11 @@
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: `isModal=true&email=${encodeURIComponent(
-          account.email
+          isEdit ? account.email : document.getElementById("zlib-email").value
         )}&password=${encodeURIComponent(
-          account.password
+          isEdit
+            ? account.password
+            : document.getElementById("zlib-password").value
         )}&site_mode=books&action=login&redirectUrl=https%3A%2F%2Fja.z-library.sk%2F&gg_json_mode=1`,
         method: "POST",
       });
