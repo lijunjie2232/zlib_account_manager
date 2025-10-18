@@ -210,7 +210,7 @@
         (account, index) => `
             <div class="zlib-account-item ${
               index === currentAccountIndex ? "active" : ""
-            }">
+            }" data-index="${index}">
                 <div class="zlib-account-alias">${
                   account.alias || "未命名账号"
                 }</div>
@@ -228,6 +228,17 @@
     // 添加账号操作事件监听
     accountsList.querySelectorAll(".zlib-btn").forEach((btn) => {
       btn.addEventListener("click", handleAccountAction);
+    });
+    
+    // 添加整个账号项的点击事件监听（用于切换账号）
+    accountsList.querySelectorAll(".zlib-account-item").forEach((item) => {
+      item.addEventListener("click", (event) => {
+        // 防止点击操作按钮时触发切换
+        if (event.target.closest(".zlib-btn")) return;
+
+        const index = parseInt(item.getAttribute("data-index"));
+        switchAccount(index);
+      });
     });
   };
 
@@ -255,10 +266,12 @@
 
     const account = accounts[index];
 
+    const currentDomain = window.location.origin;
+
     try {
-      const response = await fetch("https://z-library.sk/rpc.php", {
+      const response = await fetch(`${currentDomain}/rpc.php`, {
         headers: {
-          Referer: "https://z-library.sk/",
+          Referer: `${currentDomain}/`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: `isModal=true&email=${encodeURIComponent(
@@ -409,10 +422,13 @@
   const testLogin = async (index, isEdit) => {
     const account = accounts[index];
 
+    // 获取当前域名
+    const currentDomain = window.location.origin;
+
     try {
-      const response = await fetch("https://z-library.sk/rpc.php", {
+      const response = await fetch(`${currentDomain}/rpc.php`, {
         headers: {
-          Referer: "https://z-library.sk/",
+          Referer: `${currentDomain}/`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: `isModal=true&email=${encodeURIComponent(
