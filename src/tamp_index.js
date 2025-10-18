@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @version      1.0
 // @description  Floating button to manage multiple Z-Library accounts, supporting switching, saving, and editing account information
-// @author       Assistant
+// @author       lijunjie2232
 // @match        *://*z-library.*/*
 // @grant        GM_setValue
 // @grant        GM_getValue
