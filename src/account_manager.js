@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Z-Library Multi-Account Manager
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      2.0
 // @description  Floating button to manage multiple Z-Library accounts, supporting switching, saving, and editing account information
 // @author       lijunjie2232
 // @match        *://*z-library.*/*
