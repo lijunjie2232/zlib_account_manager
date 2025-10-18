@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Z-Library Multi-Account Manager
 // @namespace    http://tampermonkey.net/
-// @version      2.0
+// @version      2.1
 // @description  Floating button to manage multiple Z-Library accounts, supporting switching, saving, and editing account information
 // @author       lijunjie2232
 // @match        *://*z-library.*/*
@@ -626,17 +626,38 @@
         const settings = JSON.parse(e.target.result);
 
         if (settings.accounts && Array.isArray(settings.accounts)) {
-          accounts = settings.accounts;
-          currentAccountIndex =
-            settings.currentAccountIndex !== undefined
-              ? settings.currentAccountIndex
-              : -1;
+          // Merge imported accounts with existing ones
+          const importedAccounts = settings.accounts;
+          const existingEmails = new Set(accounts.map((acc) => acc.email));
+
+          // Add only new accounts (not already present by email)
+          importedAccounts.forEach((importedAccount) => {
+            if (!existingEmails.has(importedAccount.email)) {
+              accounts.push(importedAccount);
+            }
+          });
+
+          // Handle currentAccountIndex if it's valid and points to an account not already current
+          if (
+            settings.currentAccountIndex !== undefined &&
+            settings.currentAccountIndex >= 0 &&
+            settings.currentAccountIndex < importedAccounts.length
+          ) {
+            const importedCurrentAccount =
+              importedAccounts[settings.currentAccountIndex];
+            const matchingAccountIndex = accounts.findIndex(
+              (acc) => acc.email === importedCurrentAccount.email
+            );
+
+            if (matchingAccountIndex !== -1) {
+              currentAccountIndex = matchingAccountIndex;
+              GM_setValue("zlib_current_account", currentAccountIndex);
+            }
+          }
 
           GM_setValue("zlib_accounts", JSON.stringify(accounts));
-          GM_setValue("zlib_current_account", currentAccountIndex);
-
           renderAccountsList();
-          showMessage("Settings imported successfully", "success");
+          showMessage("Settings imported and merged successfully", "success");
         } else {
           showMessage("Invalid settings file format", "error");
         }
