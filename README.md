@@ -17,7 +17,7 @@ zlibraryのアカウントマネージャー
 [violentmonkey](https://violentmonkey.github.io)それとも[Tampermonkey](https://www.tampermonkey.net)を使用して以下のURLからインストール:
 
 ```
-https://raw.githubusercontent.com/lijunjie2232/zlib_account_manager/refs/heads/master/src/tamp_index.js
+https://raw.githubusercontent.com/lijunjie2232/zlib_account_manager/refs/heads/master/src/account_manager.js
 ```
 
 ## 使い方
