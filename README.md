@@ -13,6 +13,10 @@ zlibraryのアカウントマネージャー
 - [ ] アカウントのエクスポート・インポート機能
 - [ ] アカウント基本情報取得
 
+## インストール方法
+[violentmonkey](https://violentmonkey.github.io)それとも[Tampermonkey](https://www.tampermonkey.net)を使用して以下のURLからインストール:
+`https://raw.githubusercontent.com/lijunjie2232/zlib_account_manager/refs/heads/master/src/tamp_index.js`
+
 ## 使い方
 1. ブラウザにTampermonkeyなどのユーザースクリプト拡張機能をインストール
 2. このスクリプトをインストール
@@ -21,7 +25,6 @@ zlibraryのアカウントマネージャー
 5. アカウントを追加・編集・削除・切り替えできます
 
 ## screenshot
-
 <table border="1">
 <tr>
 <th>add account</th>
