@@ -336,11 +336,11 @@
                 </div>
             </form>
         `;
-                    // ${
-                    //   isEdit
-                    //     ? `<button type="button" class="zlib-btn zlib-btn-success" id="zlib-test-login">测试登录</button>`
-                    //     : ""
-                    // }
+    // ${
+    //   isEdit
+    //     ? `<button type="button" class="zlib-btn zlib-btn-success" id="zlib-test-login">测试登录</button>`
+    //     : ""
+    // }
     const form = document.getElementById("zlib-account-form");
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -447,14 +447,13 @@
     msg.textContent = message;
     msg.style.cssText = `
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 80px;
+            right: 30px;
             padding: 12px 20px;
             border-radius: 4px;
             color: white;
             font-size: 14px;
             z-index: 10001;
-            transition: opacity 0.3s;
             background: ${
               type === "success"
                 ? "#2ed573"
@@ -462,13 +461,23 @@
                 ? "#ff4757"
                 : "#1E90FF"
             };
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         `;
 
     document.body.appendChild(msg);
 
-    // 3秒后自动消失
+    // 触发入场动画
+    setTimeout(() => {
+      msg.style.opacity = "1";
+      msg.style.transform = "translateX(0)";
+    }, 10);
+
+    // 3秒后自动消失动画
     setTimeout(() => {
       msg.style.opacity = "0";
+      msg.style.transform = "translateX(100%)";
       setTimeout(() => msg.remove(), 300);
     }, 3000);
   };
