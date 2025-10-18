@@ -1,11 +1,10 @@
 // ==UserScript==
-// @name         Z-Library 账号管理器
+// @name         Z-Library Multi-Account Manager
 // @namespace    http://tampermonkey.net/
 // @version      1.0
-// @description  悬浮按钮管理Z-Library多个账号，支持切换、保存和编辑账号信息
+// @description  Floating button to manage multiple Z-Library accounts, supporting switching, saving, and editing account information
 // @author       Assistant
-// @match        *://z-library.sk/*
-// @match        *://*.z-library.sk/*
+// @match        *://*z-library.*/*
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_deleteValue
@@ -15,12 +14,12 @@
 (function () {
   "use strict";
 
-  // 加载保存的账号数据
+  // Load saved account data
   let accounts = JSON.parse(GM_getValue("zlib_accounts", "[]"));
   let currentAccountIndex = GM_getValue("zlib_current_account", -1);
   let isManagerVisible = false;
 
-  // 添加样式
+  // Add styles
   GM_addStyle(`
         .zlib-floating-btn {
             position: fixed;
@@ -32,7 +31,7 @@
             color: white;
             border: none;
             border-radius: 50%;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
@@ -128,14 +127,35 @@
             gap: 5px;
             margin-top: 5px;
         }
+        /* New style: Set max height and scrollbar for account list */
+        #zlib-accounts-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        /* Optimize scrollbar style */
+        #zlib-accounts-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        #zlib-accounts-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        #zlib-accounts-list::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+        #zlib-accounts-list::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
     `);
 
-  // 创建悬浮按钮
+  // Create floating button
   const createFloatingButton = () => {
     const btn = document.createElement("button");
     btn.className = "zlib-floating-btn";
-    btn.textContent = "账号";
-    btn.title = "Z-Library 账号管理器";
+    btn.textContent = "Account";
+    btn.title = "Z-Library Account Manager";
 
     btn.addEventListener("click", toggleAccountManager);
 
@@ -143,7 +163,7 @@
     return btn;
   };
 
-  // 创建账号管理器界面
+  // Create account manager interface
   const createAccountManager = () => {
     const manager = document.createElement("div");
     manager.className = "zlib-account-manager";
@@ -153,7 +173,7 @@
     return manager;
   };
 
-  // 切换账号管理器显示/隐藏
+  // Toggle account manager show/hide
   const toggleAccountManager = () => {
     const manager = document.getElementById("zlib-account-manager");
     if (!manager) return;
@@ -167,25 +187,25 @@
     isManagerVisible = !isManagerVisible;
   };
 
-  // 渲染账号管理器内容
+  // Render account manager content
   const renderAccountManager = () => {
     const manager = document.getElementById("zlib-account-manager");
     if (!manager) return;
 
     manager.innerHTML = `
             <div class="zlib-manager-header">
-                <div class="zlib-manager-title">账号管理</div>
+                <div class="zlib-manager-title">Account Management</div>
             </div>
             <div id="zlib-accounts-list"></div>
             <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee;">
-                <button class="zlib-btn" id="zlib-close-manager">关闭</button>
-                <button class="zlib-btn zlib-btn-success" id="zlib-add-account">添加账号</button>
+                <button class="zlib-btn" id="zlib-close-manager">Close</button>
+                <button class="zlib-btn zlib-btn-success" id="zlib-add-account">Add Account</button>
             </div>
         `;
 
     renderAccountsList();
 
-    // 添加事件监听器
+    // Add event listeners
     document
       .getElementById("zlib-add-account")
       .addEventListener("click", showAccountForm);
@@ -194,14 +214,14 @@
       .addEventListener("click", toggleAccountManager);
   };
 
-  // 渲染账号列表
+  // Render account list
   const renderAccountsList = () => {
     const accountsList = document.getElementById("zlib-accounts-list");
     if (!accountsList) return;
 
     if (accounts.length === 0) {
       accountsList.innerHTML =
-        '<div style="text-align: center; color: #666; padding: 20px;">暂无保存的账号</div>';
+        '<div style="text-align: center; color: #666; padding: 20px;">No saved accounts</div>';
       return;
     }
 
@@ -212,28 +232,28 @@
               index === currentAccountIndex ? "active" : ""
             }" data-index="${index}">
                 <div class="zlib-account-alias">${
-                  account.alias || "未命名账号"
+                  account.alias || "Unnamed Account"
                 }</div>
                 <div class="zlib-account-email">${account.email}</div>
                 <div class="zlib-account-actions">
-                    <button class="zlib-btn zlib-btn-primary" data-index="${index}" data-action="switch">切换</button>
-                    <button class="zlib-btn" data-index="${index}" data-action="edit">编辑</button>
-                    <button class="zlib-btn zlib-btn-danger" data-index="${index}" data-action="delete">删除</button>
+                    <button class="zlib-btn zlib-btn-primary" data-index="${index}" data-action="switch">Switch</button>
+                    <button class="zlib-btn" data-index="${index}" data-action="edit">Edit</button>
+                    <button class="zlib-btn zlib-btn-danger" data-index="${index}" data-action="delete">Delete</button>
                 </div>
             </div>
         `
       )
       .join("");
 
-    // 添加账号操作事件监听
+    // Add account action event listeners
     accountsList.querySelectorAll(".zlib-btn").forEach((btn) => {
       btn.addEventListener("click", handleAccountAction);
     });
-    
-    // 添加整个账号项的点击事件监听（用于切换账号）
+
+    // Add click event listener for entire account item (for switching accounts)
     accountsList.querySelectorAll(".zlib-account-item").forEach((item) => {
       item.addEventListener("click", (event) => {
-        // 防止点击操作按钮时触发切换
+        // Prevent switching when clicking action buttons
         if (event.target.closest(".zlib-btn")) return;
 
         const index = parseInt(item.getAttribute("data-index"));
@@ -242,7 +262,7 @@
     });
   };
 
-  // 处理账号操作
+  // Handle account actions
   const handleAccountAction = (event) => {
     const index = parseInt(event.target.getAttribute("data-index"));
     const action = event.target.getAttribute("data-action");
@@ -260,7 +280,7 @@
     }
   };
 
-  // 切换账号
+  // Switch account
   const switchAccount = async (index) => {
     if (index < 0 || index >= accounts.length) return;
 
@@ -283,31 +303,43 @@
       });
 
       if (response.ok) {
-        currentAccountIndex = index;
-        GM_setValue("zlib_current_account", currentAccountIndex);
+        const data = await response.json();
 
-        // 更新界面
-        renderAccountsList();
+        // Check if login was successful
+        if (data.response && data.response.user_id) {
+          currentAccountIndex = index;
+          GM_setValue("zlib_current_account", currentAccountIndex);
 
-        // 显示成功消息
-        showMessage(
-          `已切换到账号: ${account.alias || account.email}`,
-          "success"
-        );
+          // Update interface
+          renderAccountsList();
 
-        // 3秒后刷新页面
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+          // Show success message
+          showMessage(
+            `Switched to account: ${account.alias || account.email}`,
+            "success"
+          );
+
+          // Refresh page after 2 seconds
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        } else {
+          // Login failed - show error message
+          const errorMsg =
+            data.response && data.response.message
+              ? data.response.message
+              : "Login failed";
+          throw new Error(errorMsg);
+        }
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (error) {
-      showMessage(`登录失败: ${error.message}`, "error");
+      showMessage(`Login failed: ${error.message}`, "error");
     }
   };
 
-  // 显示账号表单（添加或编辑）
+  // Show account form (add or edit)
   const showAccountForm = (index = -1) => {
     const isEdit = index >= 0;
     const account = isEdit
@@ -318,39 +350,39 @@
     manager.innerHTML = `
             <div class="zlib-manager-header">
                 <div class="zlib-manager-title">${
-                  isEdit ? "编辑账号" : "添加账号"
+                  isEdit ? "Edit Account" : "Add Account"
                 }</div>
             </div>
             <form id="zlib-account-form">
                 <div class="zlib-form-group">
-                    <label>别名（可选）:</label>
+                    <label>Alias (optional):</label>
                     <input type="text" class="zlib-form-input" id="zlib-alias"
                            value="${
                              account.alias
-                           }" placeholder="为账号起个名字">
+                           }" placeholder="Give the account a name">
                 </div>
                 <div class="zlib-form-group">
-                    <label>邮箱:</label>
+                    <label>Email:</label>
                     <input type="email" class="zlib-form-input" id="zlib-email"
                            value="${account.email}" required>
                 </div>
                 <div class="zlib-form-group">
-                    <label>密码:</label>
+                    <label>Password:</label>
                     <input type="password" class="zlib-form-input" id="zlib-password"
                            value="${account.password}" required>
                 </div>
                 <div style="margin-top: 15px;">
-                    <button type="button" class="zlib-btn" id="zlib-cancel-form">取消</button>
+                    <button type="button" class="zlib-btn" id="zlib-cancel-form">Cancel</button>
                     <button type="submit" class="zlib-btn zlib-btn-primary">${
-                      isEdit ? "更新" : "保存"
+                      isEdit ? "Update" : "Save"
                     }</button>
-                    <button type="button" class="zlib-btn zlib-btn-success" id="zlib-test-login">测试登录</button>
+                    <button type="button" class="zlib-btn zlib-btn-success" id="zlib-test-login">Test Login</button>
                 </div>
             </form>
         `;
     // ${
     //   isEdit
-    //     ? `<button type="button" class="zlib-btn zlib-btn-success" id="zlib-test-login">测试登录</button>`
+    //     ? `<button type="button" class="zlib-btn zlib-btn-success" id="zlib-test-login">Test Login</button>`
     //     : ""
     // }
     const form = document.getElementById("zlib-account-form");
@@ -370,41 +402,44 @@
     // }
   };
 
-  // 保存账号
+  // Save account
   const saveAccount = (index = -1) => {
     const alias = document.getElementById("zlib-alias").value.trim();
     const email = document.getElementById("zlib-email").value.trim();
     const password = document.getElementById("zlib-password").value;
 
     if (!email || !password) {
-      showMessage("邮箱和密码不能为空", "error");
+      showMessage("Email and password cannot be empty", "error");
       return;
     }
 
     const accountData = { alias, email, password };
 
     if (index >= 0) {
-      // 编辑现有账号
+      // Edit existing account
       accounts[index] = accountData;
     } else {
-      // 添加新账号
+      // Add new account
       accounts.push(accountData);
     }
 
     GM_setValue("zlib_accounts", JSON.stringify(accounts));
-    showMessage(`账号${index >= 0 ? "更新" : "保存"}成功`, "success");
+    showMessage(
+      `Account ${index >= 0 ? "updated" : "saved"} successfully`,
+      "success"
+    );
 
-    // 返回账号列表
+    // Return to account list
     setTimeout(renderAccountManager, 1000);
   };
 
-  // 删除账号
+  // Delete account
   const deleteAccount = (index) => {
-    if (!confirm("确定要删除这个账号吗？")) return;
+    if (!confirm("Are you sure you want to delete this account?")) return;
 
     accounts.splice(index, 1);
 
-    // 如果删除的是当前账号，更新当前账号索引
+    // If deleting the current account, update current account index
     if (currentAccountIndex === index) {
       currentAccountIndex = -1;
       GM_setValue("zlib_current_account", -1);
@@ -415,15 +450,24 @@
 
     GM_setValue("zlib_accounts", JSON.stringify(accounts));
     renderAccountsList();
-    showMessage("账号已删除", "success");
+    showMessage("Account deleted successfully", "success");
   };
 
-  // 测试登录
+  // Test login
   const testLogin = async (index, isEdit) => {
-    const account = accounts[index];
-
-    // 获取当前域名
+    // Get current domain
     const currentDomain = window.location.origin;
+
+    // Get email and password values
+    let email, password;
+    if (isEdit) {
+      const account = accounts[index];
+      email = account.email;
+      password = account.password;
+    } else {
+      email = document.getElementById("zlib-email").value;
+      password = document.getElementById("zlib-password").value;
+    }
 
     try {
       const response = await fetch(`${currentDomain}/rpc.php`, {
@@ -432,28 +476,38 @@
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: `isModal=true&email=${encodeURIComponent(
-          isEdit ? account.email : document.getElementById("zlib-email").value
+          email
         )}&password=${encodeURIComponent(
-          isEdit
-            ? account.password
-            : document.getElementById("zlib-password").value
+          password
         )}&site_mode=books&action=login&redirectUrl=https%3A%2F%2Fja.z-library.sk%2F&gg_json_mode=1`,
         method: "POST",
       });
 
       if (response.ok) {
-        showMessage("登录测试成功！", "success");
+        const data = await response.json();
+
+        // Check if login was successful
+        if (data.response && data.response.user_id) {
+          showMessage("Login test successful!", "success");
+        } else {
+          // Login failed - show error message
+          const errorMsg =
+            data.response && data.response.message
+              ? data.response.message
+              : "Login Test failed";
+          throw new Error(errorMsg);
+        }
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (error) {
-      showMessage(`登录测试失败: ${error.message}`, "error");
+      showMessage(`Login test failed: ${error.message}`, "error");
     }
   };
 
-  // 显示消息
+  // Show message
   const showMessage = (message, type = "info") => {
-    // 移除现有消息
+    // Remove existing message
     const existingMsg = document.getElementById("zlib-message");
     if (existingMsg) existingMsg.remove();
 
@@ -484,13 +538,13 @@
 
     document.body.appendChild(msg);
 
-    // 触发入场动画
+    // Trigger entrance animation
     setTimeout(() => {
       msg.style.opacity = "1";
       msg.style.transform = "translateX(0)";
     }, 10);
 
-    // 3秒后自动消失动画
+    // Auto disappear animation after 3 seconds
     setTimeout(() => {
       msg.style.opacity = "0";
       msg.style.transform = "translateX(100%)";
@@ -498,22 +552,22 @@
     }, 3000);
   };
 
-  // 初始化
+  // Initialize
   const init = () => {
     createFloatingButton();
     createAccountManager();
 
-    // 如果保存了当前账号，自动显示当前账号信息
+    // If current account is saved, automatically show current account info
     if (currentAccountIndex >= 0 && currentAccountIndex < accounts.length) {
       const currentAccount = accounts[currentAccountIndex];
       showMessage(
-        `当前账号: ${currentAccount.alias || currentAccount.email}`,
+        `Current account: ${currentAccount.alias || currentAccount.email}`,
         "info"
       );
     }
   };
 
-  // 页面加载完成后初始化
+  // Initialize after page load
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
