@@ -31,15 +31,15 @@ https://raw.githubusercontent.com/lijunjie2232/zlib_account_manager/refs/heads/m
 <table border="1">
 <tr>
 <th>add account</th>
-<td><img src="./assert/add.png" width="200"></td>
+<td><img src="./assert/add.png" width="320"></td>
 </tr>
 <tr>
 <th>switch account</th>
-<td><img src="./assert/switch.png" width="200"></td>
+<td><img src="./assert/switch.png" width="320"></td>
 </tr>
 <tr>
 <th>test account</th>
-<td><img src="./assert/test.png" width="200"></td>
+<td><img src="./assert/test.png" width="320"></td>
 </tr>
 
 </table>
