@@ -398,12 +398,20 @@
     // Add password visibility toggle with continuous press
     const toggleButton = document.getElementById("zlib-toggle-password");
     const passwordInput = document.getElementById("zlib-password");
-    
-    toggleButton.addEventListener("mousedown", () => showPassword(passwordInput));
-    toggleButton.addEventListener("touchstart", () => showPassword(passwordInput));
+
+    toggleButton.addEventListener("mousedown", () =>
+      showPassword(passwordInput)
+    );
+    toggleButton.addEventListener("touchstart", () =>
+      showPassword(passwordInput)
+    );
     toggleButton.addEventListener("mouseup", () => hidePassword(passwordInput));
-    toggleButton.addEventListener("touchend", () => hidePassword(passwordInput));
-    toggleButton.addEventListener("mouseleave", () => hidePassword(passwordInput));
+    toggleButton.addEventListener("touchend", () =>
+      hidePassword(passwordInput)
+    );
+    toggleButton.addEventListener("mouseleave", () =>
+      hidePassword(passwordInput)
+    );
 
     document.getElementById("zlib-test-login").addEventListener("click", () => {
       testLogin(index, isEdit);
