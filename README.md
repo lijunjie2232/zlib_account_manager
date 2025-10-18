@@ -28,7 +28,7 @@ https://raw.githubusercontent.com/lijunjie2232/zlib_account_manager/refs/heads/m
 5. アカウントを追加・編集・削除・切り替えできます
 
 ## screenshot
-<table border="1">
+<table>
 <tr>
 <th>add account</th>
 <td><img src="./assert/add.png" width="320"></td>
